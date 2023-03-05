@@ -31,4 +31,4 @@ class Settings:
     db_user: str = None
     db_pass: str = None
     db_name: str = None
-    sqlalchemy_uri: str = 'sqlite:///../cache.db'
+    sqlalchemy_uri: str = 'sqlite:///../../cache.db'
