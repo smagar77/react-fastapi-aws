@@ -1,1 +1,3 @@
 fastapi-cloudwatch/rest_service/.env
+react-app/rds-monitor/node_modules/
+fastapi-cloudwatch/rest_service/settings.py

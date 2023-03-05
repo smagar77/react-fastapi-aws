@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "react-fastapi-rds-cloudwatch-git"
+version = "0.1.0"
+description = ""
+authors = ["Sachin Magar <smagar77@gmail.com>"]
+readme = "README.md"
+packages = [{include = "react_fastapi_rds_cloudwatch_git"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
