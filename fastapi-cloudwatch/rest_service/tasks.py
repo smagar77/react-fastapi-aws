@@ -39,6 +39,7 @@ def fetch_rds_instance():
 
 def update_instance_cache(account_name: str):
     engine = create_engine(env.get('SQLALCHEMY_URI'))
+    instance_obj_collect = []
     with Session(engine) as session:
         aws_access_key_id_account = env.get(f"AWS_ACCESS_KEY_ID_{account_name}")
         aws_secret_access_key_account = env.get(f"AWS_SECRET_ACCESS_KEY_ID_{account_name}")
@@ -79,6 +80,11 @@ def update_instance_cache(account_name: str):
                     maximum_storage_threshold=instance["MaxAllocatedStorage"],
                     multi_az=instance["MultiAZ"],
                 )
-                session.add(instance_obj)
+                instance_obj_collect.append(instance_obj)
                 del instance_obj
         session.commit()
+    for collect_row in instance_obj_collect:
+        with Session(engine) as session:
+            session.add(collect_row)
+            session.commit()
+
