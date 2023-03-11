@@ -57,14 +57,14 @@ def update_instance_cache(account_name: str):
         )
 
         paginator = client1.get_paginator('describe_db_instances')
-        response_iterator = paginator.paginate(
+        paginator_response = paginator.paginate(
             PaginationConfig={
                 'MaxItems': 100,
                 'PageSize': 20,
                 'StartingToken': None
             }
         )
-        for response_iterator in response_iterator:
+        for response_iterator in paginator_response:
             db_instances = response_iterator["DBInstances"]
             for instance in db_instances:
                 instance_obj: RDSMonitorCache = RDSMonitorCache(
