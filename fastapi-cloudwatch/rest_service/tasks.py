@@ -33,8 +33,7 @@ def fetch_rds_instance():
             try:
                 update_instance_cache(f"ACCOUNT{str(i)}")
             except Exception as exp:
-                print(exp)
-                print("Some error for update cache, account=AWS_ACCESS_KEY_ID_ACCOUNT{str(i)}")
+                raise
 
 
 def update_instance_cache(account_name: str):
@@ -70,14 +69,14 @@ def update_instance_cache(account_name: str):
             for instance in db_instances:
                 instance_obj: RDSMonitorCache = RDSMonitorCache(
                     account_name=f"{account_name}",
-                    instance_identifier=instance["DBInstanceIdentifier"],
-                    instance_class=instance["DBInstanceClass"],
-                    instance_status=instance["DBInstanceStatus"],
-                    maintenance_window=instance["PreferredMaintenanceWindow"],
-                    backup_window=instance["PreferredBackupWindow"],
-                    automated_backups=instance["BackupRetentionPeriod"],
-                    storage=instance["AllocatedStorage"],
-                    maximum_storage_threshold=instance["MaxAllocatedStorage"],
+                    instance_identifier=instance.get("DBInstanceIdentifier", ""),
+                    instance_class=instance.get("DBInstanceClass", ""),
+                    instance_status=instance.get("DBInstanceStatus", ""),
+                    maintenance_window=instance.get("PreferredMaintenanceWindow", ""),
+                    backup_window=instance.get("PreferredBackupWindow", ""),
+                    automated_backups=instance.get("BackupRetentionPeriod", ""),
+                    storage=instance.get("AllocatedStorage", ""),
+                    maximum_storage_threshold=instance.get("MaxAllocatedStorage", ""),
                     multi_az=instance["MultiAZ"],
                 )
                 instance_obj_collect.append(instance_obj)
