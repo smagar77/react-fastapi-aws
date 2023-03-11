@@ -84,7 +84,9 @@ def update_instance_cache(account_name: str):
                 del instance_obj
         session.commit()
     for collect_row in instance_obj_collect:
-        with Session(engine) as session:
-            session.add(collect_row)
-            session.commit()
-
+        try:
+            with Session(engine) as session:
+                session.add(collect_row)
+                session.commit()
+        except Exception as e:
+            print(e)
