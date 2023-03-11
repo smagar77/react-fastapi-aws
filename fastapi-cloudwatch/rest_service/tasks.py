@@ -56,21 +56,29 @@ def update_instance_cache(account_name: str):
             region_name=region_name_account
         )
 
-        db_instances = client1.describe_db_instances()
-        db_instances = db_instances["DBInstances"]
-        for instance in db_instances:
-            instance_obj: RDSMonitorCache = RDSMonitorCache(
-                account_name=f"{account_name}",
-                instance_identifier=instance["DBInstanceIdentifier"],
-                instance_class=instance["DBInstanceClass"],
-                instance_status=instance["DBInstanceStatus"],
-                maintenance_window=instance["PreferredMaintenanceWindow"],
-                backup_window=instance["PreferredBackupWindow"],
-                automated_backups=instance["BackupRetentionPeriod"],
-                storage=instance["AllocatedStorage"],
-                maximum_storage_threshold=instance["MaxAllocatedStorage"],
-                multi_az=instance["MultiAZ"],
-            )
-            session.add(instance_obj)
-            del instance_obj
+        paginator = client1.get_paginator('describe_db_instances')
+        response_iterator = paginator.paginate(
+            PaginationConfig={
+                'MaxItems': 100,
+                'PageSize': 20,
+                'StartingToken': None
+            }
+        )
+        for response_iterator in response_iterator:
+            db_instances = response_iterator["DBInstances"]
+            for instance in db_instances:
+                instance_obj: RDSMonitorCache = RDSMonitorCache(
+                    account_name=f"{account_name}",
+                    instance_identifier=instance["DBInstanceIdentifier"],
+                    instance_class=instance["DBInstanceClass"],
+                    instance_status=instance["DBInstanceStatus"],
+                    maintenance_window=instance["PreferredMaintenanceWindow"],
+                    backup_window=instance["PreferredBackupWindow"],
+                    automated_backups=instance["BackupRetentionPeriod"],
+                    storage=instance["AllocatedStorage"],
+                    maximum_storage_threshold=instance["MaxAllocatedStorage"],
+                    multi_az=instance["MultiAZ"],
+                )
+                session.add(instance_obj)
+                del instance_obj
         session.commit()
