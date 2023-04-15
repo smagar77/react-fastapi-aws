@@ -19,7 +19,8 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-#from rest_service.model import *  # noqa
+from rest_service.model import *  # noqa
+from rest_service.settings import Settings
 
 try:
     from db_init import *

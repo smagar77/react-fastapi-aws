@@ -1,14 +1,16 @@
 import typing
 
-import rest_service.__about__ as __about__
-
-
 class Settings:
     """"""
-    app_title: str = __about__.__NAME__
-    app_version: str = __about__.__VERSION__
-    api_version: str = __about__.__API_VERSION__
-    app_description: str = __about__.__DESCRIPTION__
+    app_title: str = 'RDS Monitoring Tool'
+    app_version: str = '0.1'
+    app_version: str = 'v1'
+    app_description: str = 'RDS monitoring web services'
+
+    # app_title: str = __about__.__NAME__
+    # app_version: str = __about__.__VERSION__
+    # api_version: str = __about__.__API_VERSION__
+    # app_description: str = __about__.__DESCRIPTION__
 
     app_port: int = 8080
     app_host: str = '127.0.0.1'
@@ -31,4 +33,4 @@ class Settings:
     db_user: str = None
     db_pass: str = None
     db_name: str = None
-    sqlalchemy_uri: str = 'sqlite:///../../cache.db'
+    sqlalchemy_uri: str = 'sqlite:////home/sachin/rds_monitor/fastapi-cloudwatch/cache.db'

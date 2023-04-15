@@ -23,13 +23,14 @@ class Base:
 
 
 class RDSMonitorCache(Base, CoreModel):
-    maintenance_window: str = Column(String(36))
-    backup_window: str = Column(String(36))
-    automated_backups: str = Column(String(36))
-    instance_class: str = Column(String(36))
-    storage: str = Column(String(36))
-    maximum_storage_threshold: str = Column(String(36))
+    maintenance_window: str = Column(String(200))
+    pending_maintenance: str = Column(String(200))
+    backup_window: str = Column(String(200))
+    automated_backups: str = Column(String(200))
+    instance_class: str = Column(String(200))
+    storage: str = Column(String(200))
+    maximum_storage_threshold: str = Column(String(200))
     multi_az: bool = Column(Boolean)
-    account_name: str = Column(String(10))
-    instance_identifier: str = Column(String(10))
-    instance_status: str = Column(String(10))
+    account_name: str = Column(String(200))
+    instance_identifier: str = Column(String(200))
+    instance_status: str = Column(String(200))

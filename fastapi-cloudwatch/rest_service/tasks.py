@@ -1,3 +1,4 @@
+import sys
 from os import environ as env
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
@@ -5,14 +6,26 @@ from dotenv import find_dotenv, load_dotenv
 from celery import Celery
 from celery.schedules import crontab
 import boto3
+from functools import lru_cache
 
+from settings import Settings
 from model import *
+
+from os.path import abspath, join
+
+# Adjust the paths
+sys.path.insert(0, abspath(join(__file__, "../", "../")))
 
 
 ENV_FILE = find_dotenv()
 
 if ENV_FILE:
     load_dotenv(ENV_FILE)
+
+
+@lru_cache
+def get_settings():
+    return Settings()
 
 
 app = Celery('tasks', broker=env.get('RABBITMQ_URI'))
@@ -37,7 +50,8 @@ def fetch_rds_instance():
 
 
 def update_instance_cache(account_name: str):
-    engine = create_engine(env.get('SQLALCHEMY_URI'))
+    settings = get_settings()
+    engine = create_engine(settings.sqlalchemy_uri)
     instance_obj_collect = []
     with Session(engine) as session:
         aws_access_key_id_account = env.get(f"AWS_ACCESS_KEY_ID_{account_name}")
@@ -64,8 +78,8 @@ def update_instance_cache(account_name: str):
                 'StartingToken': None
             }
         )
-        for response_iterator in paginator_response:
-            db_instances = response_iterator["DBInstances"]
+        for response_item in paginator_response:
+            db_instances = response_item["DBInstances"]
             for instance in db_instances:
                 instance_obj: RDSMonitorCache = RDSMonitorCache(
                     account_name=f"{account_name}",
