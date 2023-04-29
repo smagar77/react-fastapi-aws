@@ -12,15 +12,14 @@ function RDSMonitor(){
 
     useEffect(()=>{
         console.log(account_name)
-        axios.get("http://127.0.0.1:8080/rdsinstance?account_name="+account_name).then(monitor=>{
+        axios.get(base_url+"/rdsinstance?account_name="+account_name).then(monitor=>{
             setInstances(monitor.data)
         }).catch(error => {
             console.log(error)
         })
     }, [account_name])
-
     useEffect(()=>{
-        axios.get("http://127.0.0.1:8080/rdsmatrix?account_name="+account_name).then(metrix=>{
+        axios.get(base_url+"/rdsmatrix?account_name="+account_name).then(metrix=>{
             setMetrix(metrix.data)
         }).catch(error => {
             console.log(error)

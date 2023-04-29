@@ -6,9 +6,10 @@ import {BrowserRouter as Router, Route, Link, Routes, useNavigate} from 'react-r
 
 
 function App() {
+  const base_url = 'http://127.0.0.1:8080'
   const [accounts, getAccounts] = useState([])
   useEffect(()=>{
-      axios.get("http://127.0.0.1:8080/list-accounts").then(monitor=>{
+    axios.get(base_url+"/list-accounts").then(monitor=>{
         getAccounts(monitor.data)
       }).catch(error => {
           console.log(error)
