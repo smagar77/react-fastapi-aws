@@ -48,7 +48,7 @@ def fetch_rds_instance():
             "arn": "",
         },
         {
-            "region": "us-east-1",
+            "region": "us-east-2",
             "name": "p55",
             "arn": "",
         },
@@ -76,11 +76,13 @@ def update_instance_cache(account_arn: dict[str, str]):
             RoleSessionName=account_arn["name"]
         )
         assumed_role_credentials = assumed_role_object['Credentials']
+
         client1 = boto3.client(
             'rds',
             aws_access_key_id=assumed_role_credentials['AccessKeyId'],
             aws_secret_access_key=assumed_role_credentials['SecretAccessKey'],
-            region_name=account_arn["region"]
+            region_name=account_arn["region"],
+            aws_session_token=assumed_role_credentials['SessionToken'],
         )
 
         paginator = client1.get_paginator('describe_db_instances')
