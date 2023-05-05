@@ -41,33 +41,46 @@ app.conf.beat_schedule = {
 
 @app.task()
 def fetch_rds_instance():
-    for i in range(1, int(env.get("TOTAL_ACCOUNTS"))+1):
-        if(env.get(f"AWS_ACCESS_KEY_ID_ACCOUNT{str(i)}")) is not None:
-            try:
-                update_instance_cache(f"ACCOUNT{str(i)}")
-            except Exception as exp:
-                raise
+    arns = [
+        {
+            "region": "us-east-1",
+            "name": "p54",
+            "arn": "",
+        },
+        {
+            "region": "us-east-1",
+            "name": "p55",
+            "arn": "",
+        },
+    ]
+
+    for account_arn in arns:
+        try:
+            update_instance_cache(account_arn)
+        except Exception as exp:
+            raise
 
 
-def update_instance_cache(account_name: str):
+def update_instance_cache(account_arn: dict[str, str]):
     settings = get_settings()
     engine = create_engine(settings.sqlalchemy_uri)
     instance_obj_collect = []
     with Session(engine) as session:
-        aws_access_key_id_account = env.get(f"AWS_ACCESS_KEY_ID_{account_name}")
-        aws_secret_access_key_account = env.get(f"AWS_SECRET_ACCESS_KEY_ID_{account_name}")
-        region_name_account = env.get(f"REGION_NAME_{account_name}")
-        account_name = env.get(f"NAME_{account_name}")
-
-        get_cache = session.query(RDSMonitorCache).filter_by(account_name=f"{account_name}").all()
+        get_cache = session.query(RDSMonitorCache).filter_by(account_name=account_arn["name"]).all()
         for chache_row in get_cache:
             session.delete(chache_row)
-
+        CURRENT_ACCOUNT_SESSION = boto3.Session()
+        STS_CLIENT = CURRENT_ACCOUNT_SESSION.client('sts')
+        assumed_role_object = STS_CLIENT.assume_role(
+            RoleArn=account_arn["arn"],
+            RoleSessionName=account_arn["name"]
+        )
+        assumed_role_credentials = assumed_role_object['Credentials']
         client1 = boto3.client(
             'rds',
-            aws_access_key_id=aws_access_key_id_account,
-            aws_secret_access_key=aws_secret_access_key_account,
-            region_name=region_name_account
+            aws_access_key_id=assumed_role_credentials['AccessKeyId'],
+            aws_secret_access_key=assumed_role_credentials['SecretAccessKey'],
+            region_name=account_arn["region"]
         )
 
         paginator = client1.get_paginator('describe_db_instances')
@@ -82,7 +95,7 @@ def update_instance_cache(account_name: str):
             db_instances = response_item["DBInstances"]
             for instance in db_instances:
                 instance_obj: RDSMonitorCache = RDSMonitorCache(
-                    account_name=f"{account_name}",
+                    account_name=account_arn["name"],
                     instance_identifier=instance.get("DBInstanceIdentifier", ""),
                     instance_class=instance.get("DBInstanceClass", ""),
                     instance_status=instance.get("DBInstanceStatus", ""),

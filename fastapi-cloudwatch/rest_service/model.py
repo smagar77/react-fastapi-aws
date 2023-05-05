@@ -24,7 +24,6 @@ class Base:
 
 class RDSMonitorCache(Base, CoreModel):
     maintenance_window: str = Column(String(200))
-    pending_maintenance: str = Column(String(200))
     backup_window: str = Column(String(200))
     automated_backups: str = Column(String(200))
     instance_class: str = Column(String(200))
