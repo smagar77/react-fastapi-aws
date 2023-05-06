@@ -120,6 +120,5 @@ def get_rds_instance(account_name: str):
 
 @router.get("/list-accounts")
 def get_list_accounts():
-    return [
-            env.get(f"NAME_ACCOUNT{str(i)}") for i in range(1, int(env.get("TOTAL_ACCOUNTS")) + 1) if (env.get(f"NAME_ACCOUNT{str(i)}")) is not None
-        ]
+    settings = get_settings()   
+    return [account_arn["name"] for account_arn in settings.arns]
