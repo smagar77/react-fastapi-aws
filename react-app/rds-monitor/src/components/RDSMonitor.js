@@ -12,14 +12,14 @@ function RDSMonitor({base_url}){
 
     useEffect(()=>{
         console.log(account_name)
-        axios.get("http://awsrdsmaintenancedashboards.mmm.com/api/rdsinstance?account_name="+account_name).then(monitor=>{
+        axios.get(base_url+"/rdsinstance?account_name="+account_name).then(monitor=>{
             setInstances(monitor.data)
         }).catch(error => {
             console.log(error)
         })
     }, [account_name])
     useEffect(()=>{
-        axios.get("http://awsrdsmaintenancedashboards.mmm.com/api/rdsmatrix?account_name="+account_name).then(metrix=>{
+        axios.get(base_url+"/rdsmatrix?account_name="+account_name).then(metrix=>{
             setMetrix(metrix.data)
         }).catch(error => {
             console.log(error)
