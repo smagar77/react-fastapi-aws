@@ -24,7 +24,7 @@ function App() {
               </ul>
             </header>
             <Routes>
-              <Route path="account/:account_name" element={<RDSMonitor />} />
+              <Route path="account/:account_name" element={<RDSMonitor base_url={base_url} />} />
             </Routes>
           </Router>
     </div>
