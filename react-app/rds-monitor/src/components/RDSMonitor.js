@@ -5,7 +5,7 @@ import axios from 'axios'
 import Metrix from './Metrix'
 
 
-function RDSMonitor(base_url){
+function RDSMonitor({base_url}){
     const {account_name} = useParams()
     const [instances, setInstances] = useState([])
     const [metrix, setMetrix] = useState([])
