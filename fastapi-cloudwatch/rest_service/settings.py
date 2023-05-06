@@ -34,3 +34,17 @@ class Settings:
     db_pass: str = None
     db_name: str = None
     sqlalchemy_uri: str = 'sqlite:////home/sachin/rds_monitor/fastapi-cloudwatch/cache.db'
+    arns: list = [{
+            "region": "us-east-1",
+            "name": "PE53-Dev",
+            "arn": "",
+        }, {
+            "region": "us-east-1",
+            "name": "PE54-NP",
+            "arn": "",
+        }, {
+            "region": "us-east-2",
+            "name": "PE55-PR",
+            "arn": "",
+        }
+    ]

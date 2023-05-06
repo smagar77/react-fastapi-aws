@@ -41,20 +41,8 @@ app.conf.beat_schedule = {
 
 @app.task()
 def fetch_rds_instance():
-    arns = [
-        {
-            "region": "us-east-1",
-            "name": "p54",
-            "arn": "",
-        },
-        {
-            "region": "us-east-2",
-            "name": "p55",
-            "arn": "",
-        },
-    ]
-
-    for account_arn in arns:
+    settings = get_settings()
+    for account_arn in settings.arns:
         try:
             update_instance_cache(account_arn)
         except Exception as exp:

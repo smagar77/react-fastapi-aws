@@ -6,7 +6,9 @@ import inject
 from uuid import uuid4
 from dotenv import find_dotenv, load_dotenv
 from sqlalchemy.orm.session import Session
+from functools import lru_cache
 
+from rest_service.settings import Settings
 from rest_service.router import APIRouter
 import boto3
 from rest_service.model import *
@@ -21,6 +23,11 @@ if ENV_FILE:
     load_dotenv(ENV_FILE)
 
 
+@lru_cache
+def get_settings():
+    return Settings()
+
+
 def default_session_factory() -> Session:
     """
     Default DB Session Factory
@@ -32,26 +39,34 @@ def default_session_factory() -> Session:
 
 @router.get("/rdsmatrix")
 def get_rds_matrix(account_name: str):
+    settings = get_settings()
+    _account = None
+    for account_arn in settings.arns:
+        if account_arn["name"] == account_name:
+            _account = account_arn
+            break
+    if _account is None:
+        return None
     account_name_preserve = account_name
     if not account_name:
         return {}
 
-    for key, val in env.items():
-        if val == account_name:
-            account_name = key.replace('NAME_ACCOUNT', 'ACCOUNT')
-            break
+    CURRENT_ACCOUNT_SESSION = boto3.Session()
+    STS_CLIENT = CURRENT_ACCOUNT_SESSION.client('sts')
+    assumed_role_object = STS_CLIENT.assume_role(
+        RoleArn=_account["arn"],
+        RoleSessionName=_account["name"]
+    )
+    assumed_role_credentials = assumed_role_object['Credentials']
 
     session = inject.instance(Session)
 
-    aws_access_key_id_account = env.get(f"AWS_ACCESS_KEY_ID_{account_name}")
-    aws_secret_access_key_account = env.get(f"AWS_SECRET_ACCESS_KEY_ID_{account_name}")
-    region_name_account = env.get(f"REGION_NAME_{account_name}")
-
     client = boto3.client(
         'cloudwatch',
-        aws_access_key_id=aws_access_key_id_account,
-        aws_secret_access_key=aws_secret_access_key_account,
-        region_name=region_name_account
+        aws_access_key_id=assumed_role_credentials['AccessKeyId'],
+        aws_secret_access_key=assumed_role_credentials['SecretAccessKey'],
+        region_name=account_arn["region"],
+        aws_session_token=assumed_role_credentials['SessionToken'],
     )
     get_cache = session.query(RDSMonitorCache).filter_by(account_name=account_name_preserve).all()
     response_data = []
