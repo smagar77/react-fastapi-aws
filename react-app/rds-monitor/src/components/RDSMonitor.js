@@ -28,6 +28,7 @@ function RDSMonitor({base_url}){
 
     return(
         <div className='table-container'>
+            <label id={"top"}>&nbsp;</label>
             <br />
             <h2>{account_name}</h2>
             <table cellSpacing="0" cellPadding="10" border="1">
@@ -38,11 +39,12 @@ function RDSMonitor({base_url}){
                         <th>DB Instance Class</th>
                         <th>DB Instance Identifier</th>
                         <th>DB Instance Status</th>
-                        <th>Maintenance Window</th>
-                        <th>Backup Window</th>
-                        <th>Automated Backups</th>
-                        <th>Storage</th>
-                        <th>Maximum Storage Threshold</th>
+                        <th>Maintenance Window(UTC)</th>
+                        <th>Backup Window(UTC)</th>
+                        <th>Automated Backups(Days)</th>
+                        <th>Storage(GB)</th>
+                        <th>Maximum Storage Threshold(GB)</th>
+                        <th>Engine</th>
                         <th>Multi Az</th>
                     </tr>
                 </thead>
@@ -52,13 +54,14 @@ function RDSMonitor({base_url}){
                             <td>{instance.account_name}</td>
                             <td>{instance.modified_at}</td>
                             <td>{instance.instance_class}</td>
-                            <td>{instance.instance_identifier}</td>
+                            <td><a href={"#"+instance.instance_identifier}>{instance.instance_identifier}</a></td>
                             <td>{instance.instance_status}</td>
                             <td>{instance.maintenance_window}</td>
                             <td>{instance.backup_window}</td>
                             <td>{instance.automated_backups}</td>
                             <td>{instance.storage}</td>
                             <td>{instance.maximum_storage_threshold}</td>
+                            <td>{instance.engine}</td>
                             <td>{instance.multi_az}</td>
                         </tr>
                     ))}

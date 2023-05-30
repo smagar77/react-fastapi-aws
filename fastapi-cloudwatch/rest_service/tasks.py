@@ -94,6 +94,7 @@ def update_instance_cache(account_arn: dict[str, str]):
                     automated_backups=instance.get("BackupRetentionPeriod", ""),
                     storage=instance.get("AllocatedStorage", ""),
                     maximum_storage_threshold=instance.get("MaxAllocatedStorage", ""),
+                    engine=instance["Engine"],
                     multi_az=instance["MultiAZ"],
                 )
                 instance_obj_collect.append(instance_obj)

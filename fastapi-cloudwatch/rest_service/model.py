@@ -33,3 +33,4 @@ class RDSMonitorCache(Base, CoreModel):
     account_name: str = Column(String(200))
     instance_identifier: str = Column(String(200))
     instance_status: str = Column(String(200))
+    engine: str = Column(String(200))

@@ -7,7 +7,8 @@ function Metrix({metrix_data, account_name}){
     return(
         <div>
             {metrix_data.map(matrix =>(<div key={matrix.request_id} style={{ maxWidth: "80%", "textAlign": "center", margin: "0 auto" }}>
-                <h3>Account: {matrix["instance_identifier"]}</h3>
+                <div style={{float: "left"}}><a href={"#top"}>Go to Top^</a></div>
+                <h3><label id={matrix["instance_identifier"]}> Account: {matrix["instance_identifier"]}</label></h3>
                 <Bar
                     data={{
                         // Name of the variables on x-axies for each bar
@@ -15,7 +16,7 @@ function Metrix({metrix_data, account_name}){
                         datasets: [
                         {
                             // Label for bars
-                            label: "FreeStorageSpace(in MB)/datetime",
+                            label: "FreeStorageSpace(in GB)/datetime",
                             // Data or value of your each variable
                             data: matrix["MetricDataResults"][0]["Values"].map(data=>bytesToSize(parseInt(data))),
                             borderWidth: 0.1,
@@ -34,8 +35,8 @@ function Metrix({metrix_data, account_name}){
 }
 function bytesToSize(bytes) {
     var i = Math.floor(Math.log(bytes) / Math.log(1024)),
-    sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];    
-    return (bytes / Math.pow(1000, 2)).toFixed(2) * 1;
+    sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    return ((bytes / Math.pow(1000, 2)).toFixed(2) * 1)/1000;
 }
 
 function formatDate(date_obj) {
