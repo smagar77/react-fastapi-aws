@@ -29,7 +29,7 @@ function RDSMonitor({base_url}){
     return(
         <div className='table-container'>
             <label id={"top"}>&nbsp;</label>
-            <h2 style={{color: "green", textAlign: "right"}}> Last Updated(GMT): {typeof(instances[0]) !=undefined ? instances[0].modified_at : ''}</h2>
+            <h2 style={{color: "green", textAlign: "right"}}> Last Updated(GMT): {typeof instances[0] !=undefined ? instances[0].modified_at : ''}</h2>
             <br />
             <h2>{account_name}</h2>
             <table cellSpacing="0" cellPadding="10" border="1">
