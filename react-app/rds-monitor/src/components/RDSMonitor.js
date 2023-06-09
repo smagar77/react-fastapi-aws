@@ -29,14 +29,13 @@ function RDSMonitor({base_url}){
     return(
         <div className='table-container'>
             <label id={"top"}>&nbsp;</label>
-            <h2 style={{color: "green", textAlign: "right"}}> Last Updated(GMT): {instances > 0 ? instances[0].modified_at : ''}</h2>
             <br />
             <h2>{account_name}</h2>
             <table cellSpacing="0" cellPadding="10" border="1">
                 <thead>
                     <tr>
                         <th>Account Name</th>
-                        <th>Updated Date</th>
+                        <th>Updated Date(GMT)</th>
                         <th>DB Instance Class</th>
                         <th>DB Instance Identifier</th>
                         <th>DB Instance Status</th>
